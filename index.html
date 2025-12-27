@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multiply Magic</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      --teal: #2d9cdb;
+      --yellow: #ffd166;
+      --green: #06d6a0;
+      --pink: #ff66c4;
+      --bg: #f9fafb;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #102541;
+    }
+
+    header {
+      background: linear-gradient(120deg, var(--teal), var(--pink));
+      color: #fff;
+      padding: 2.5rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+    }
+
+    header p {
+      margin: 0 auto;
+      max-width: 40rem;
+      font-size: 1.1rem;
+    }
+
+    main {
+      padding: 2rem clamp(1rem, 3vw, 3rem);
+      display: grid;
+      gap: 2rem;
+    }
+
+    section {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(16, 37, 65, 0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--teal);
+    }
+
+    ul.tips {
+      list-style: "⭐ ";
+      padding-left: 1rem;
+      margin: 0;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    button, input[type="number"], input[type="text"] {
+      font: inherit;
+      padding: 0.65rem 1rem;
+      border-radius: 999px;
+      border: 2px solid transparent;
+    }
+
+    button {
+      background: var(--green);
+      color: #043326;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(6, 214, 160, 0.35);
+    }
+
+    button.secondary {
+      background: var(--yellow);
+      color: #4a3410;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 28rem;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #e3e8ef;
+      padding: 0.65rem;
+      text-align: center;
+    }
+
+    th {
+      background: var(--teal);
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tr:nth-child(odd) td {
+      background: #f4fbff;
+    }
+
+    .card-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 720px) {
+      .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      border: 2px dashed rgba(45, 156, 219, 0.4);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      background: #fefefe;
+    }
+
+    .feedback {
+      margin-top: 0.75rem;
+      font-weight: bold;
+      min-height: 1.5rem;
+    }
+
+    .stats {
+      margin-top: 0.5rem;
+      color: #425466;
+      font-size: 0.95rem;
+    }
+
+    .question {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Multiply Magic</h1>
+    <p>Practice the 12×12 multiplication table with friendly tips, a peek-a-boo chart, and quick puzzles that feel like a game.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Helpful ways to remember</h2>
+      <p>Math teachers often recommend mixing different senses and patterns. Try these:</p>
+      <ul class="tips">
+        <li>Use <strong>skip-counting songs</strong> (2, 4, 6…) to lock in rhythm.</li>
+        <li>Draw <strong>arrays or equal groups</strong> so the numbers feel concrete.</li>
+        <li>Say a <strong>fact family</strong> aloud (4×3, 3×4, 12÷3, 12÷4) to connect ideas.</li>
+        <li>Spot <strong>patterns on the chart</strong>: every 5 ends with 0 or 5, 9s climb then fall.</li>
+        <li>Break harder facts into <strong>friendly doubles</strong> (8×6 = 8×3 + 8×3).</li>
+        <li>Use quick <strong>flash quizzes</strong> daily; tiny bursts keep memory fresh.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <h2 style="margin:0;">Multiplication Table</h2>
+        <button id="toggleTableBtn" class="secondary">Show the table</button>
+      </div>
+      <div class="table-wrapper" id="tableWrapper">
+        <table id="timesTable"></table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Mini math puzzles</h2>
+      <div class="card-grid">
+        <div class="card" id="flashCard">
+          <h3>Flash Quiz</h3>
+          <p>How fast can you answer?</p>
+          <div class="question" id="flashQuestion"></div>
+          <label>
+            Your answer
+            <input type="number" id="flashAnswer" placeholder="Type the product" min="0" />
+          </label>
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap;">
+            <button id="flashCheck">Check answer</button>
+            <button id="flashNew" class="secondary">New question</button>
+          </div>
+          <div class="feedback" id="flashFeedback"></div>
+          <div class="stats" id="flashStats"></div>
+        </div>
+
+        <div class="card" id="missingCard">
+          <h3>Missing Number Mystery</h3>
+          <p>Fill in the blank to complete the fact.</p>
+          <div class="question" id="missingPrompt"></div>
+          <label>
+            Missing number
+            <input type="number" id="missingAnswer" placeholder="?" min="0" />
+          </label>
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap;">
+            <button id="missingCheck">Check puzzle</button>
+            <button id="missingNew" class="secondary">Try another</button>
+          </div>
+          <div class="feedback" id="missingFeedback"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const tableWrapper = document.getElementById("tableWrapper");
+    const toggleTableBtn = document.getElementById("toggleTableBtn");
+    const timesTable = document.getElementById("timesTable");
+
+    function buildTable() {
+      const size = 12;
+      const theadRow = document.createElement("tr");
+      const corner = document.createElement("th");
+      corner.textContent = "×";
+      theadRow.appendChild(corner);
+
+      for (let i = 1; i <= size; i++) {
+        const th = document.createElement("th");
+        th.textContent = i;
+        theadRow.appendChild(th);
+      }
+      timesTable.appendChild(theadRow);
+
+      for (let row = 1; row <= size; row++) {
+        const tr = document.createElement("tr");
+        const rowHeader = document.createElement("th");
+        rowHeader.textContent = row;
+        tr.appendChild(rowHeader);
+
+        for (let col = 1; col <= size; col++) {
+          const td = document.createElement("td");
+          td.textContent = row * col;
+          tr.appendChild(td);
+        }
+        timesTable.appendChild(tr);
+      }
+    }
+
+    toggleTableBtn.addEventListener("click", () => {
+      const visible = tableWrapper.style.display === "block";
+      tableWrapper.style.display = visible ? "none" : "block";
+      toggleTableBtn.textContent = visible ? "Show the table" : "Hide the table";
+    });
+
+    buildTable();
+
+    // Flash quiz logic
+    const flashQuestionEl = document.getElementById("flashQuestion");
+    const flashAnswerEl = document.getElementById("flashAnswer");
+    const flashFeedbackEl = document.getElementById("flashFeedback");
+    const flashStatsEl = document.getElementById("flashStats");
+    const flashState = { a: 0, b: 0, total: 0, correct: 0 };
+
+    function newFlashQuestion() {
+      flashState.a = Math.ceil(Math.random() * 12);
+      flashState.b = Math.ceil(Math.random() * 12);
+      flashQuestionEl.textContent = `${flashState.a} × ${flashState.b} = ?`;
+      flashAnswerEl.value = "";
+      flashAnswerEl.focus();
+      flashFeedbackEl.textContent = "";
+    }
+
+    function updateFlashStats() {
+      flashStatsEl.textContent = `Solved ${flashState.correct} of ${flashState.total} so far`;
+    }
+
+    document.getElementById("flashCheck").addEventListener("click", () => {
+      const guess = Number(flashAnswerEl.value);
+      if (!Number.isFinite(guess)) {
+        flashFeedbackEl.textContent = "Type a number to try!";
+        return;
+      }
+      flashState.total += 1;
+      if (guess === flashState.a * flashState.b) {
+        flashState.correct += 1;
+        flashFeedbackEl.textContent = "Great job!";
+        setTimeout(newFlashQuestion, 700);
+      } else {
+        flashFeedbackEl.textContent = `Almost! ${flashState.a} × ${flashState.b} = ${flashState.a * flashState.b}`;
+      }
+      updateFlashStats();
+    });
+
+    document.getElementById("flashNew").addEventListener("click", () => {
+      newFlashQuestion();
+    });
+
+    // Missing number puzzle
+    const missingPrompt = document.getElementById("missingPrompt");
+    const missingAnswerInput = document.getElementById("missingAnswer");
+    const missingFeedback = document.getElementById("missingFeedback");
+    const missingState = { solution: 0 };
+
+    function newMissingPuzzle() {
+      const a = Math.ceil(Math.random() * 12);
+      const b = Math.ceil(Math.random() * 12);
+      const missing = Math.floor(Math.random() * 3); // 0: first, 1: second, 2: product
+      let promptText = "";
+
+      if (missing === 0) {
+        missingState.solution = a;
+        promptText = `? × ${b} = ${a * b}`;
+      } else if (missing === 1) {
+        missingState.solution = b;
+        promptText = `${a} × ? = ${a * b}`;
+      } else {
+        missingState.solution = a * b;
+        promptText = `${a} × ${b} = ?`;
+      }
+      missingPrompt.textContent = promptText;
+      missingAnswerInput.value = "";
+      missingFeedback.textContent = "";
+      missingAnswerInput.focus();
+    }
+
+    document.getElementById("missingCheck").addEventListener("click", () => {
+      const guess = Number(missingAnswerInput.value);
+      if (!Number.isFinite(guess)) {
+        missingFeedback.textContent = "Type the number you think fits!";
+        return;
+      }
+      if (guess === missingState.solution) {
+        missingFeedback.textContent = "You cracked the code!";
+        setTimeout(newMissingPuzzle, 700);
+      } else {
+        missingFeedback.textContent = "Not yet—peek at the table for clues!";
+      }
+    });
+
+    document.getElementById("missingNew").addEventListener("click", newMissingPuzzle);
+
+    // Start with table hidden for peek-a-boo effect and load puzzles
+    toggleTableBtn.click();
+    newFlashQuestion();
+    newMissingPuzzle();
+  </script>
+</body>
+</html>
