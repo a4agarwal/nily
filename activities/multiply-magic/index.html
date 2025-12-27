@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Multiply Magic | Nily Playhouse</title>
+  <meta name="theme-color" content="#2d9cdb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Multiply Magic" />
   <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600&display=swap");
     :root {
@@ -112,20 +118,24 @@
 
     .table-wrapper {
       overflow-x: auto;
-      margin-top: 1rem;
+      margin: 1rem auto 0;
+      max-width: min(640px, 100%);
       display: none;
     }
 
     table {
       border-collapse: collapse;
-      min-width: 28rem;
+      min-width: 24rem;
       width: 100%;
+      font-size: clamp(0.8rem, 1vw + 0.6rem, 1rem);
     }
 
     th, td {
       border: 1px solid #e3e8ef;
-      padding: 0.65rem;
+      padding: 0.45rem;
       text-align: center;
+      cursor: pointer;
+      user-select: none;
     }
 
     th {
@@ -136,8 +146,46 @@
       z-index: 1;
     }
 
+    th.row-header {
+      position: sticky;
+      left: 0;
+      background: #25a5d2;
+      color: #fff;
+      z-index: 2;
+    }
+
+    th.corner-cell {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: #1a7bb3;
+    }
+
     tr:nth-child(odd) td {
       background: #f4fbff;
+    }
+
+    .row-active {
+      background: #fff6d5 !important;
+    }
+
+    .col-active {
+      background: #e8fbff !important;
+    }
+
+    td.cell-focus {
+      background: #ffe3fb !important;
+      box-shadow: inset 0 0 0 3px rgba(255, 102, 196, 0.5);
+      transform: scale(1.03);
+    }
+
+    th.row-header.row-active,
+    th.col-header.col-active {
+      color: #0c253f !important;
+    }
+
+    th.col-header.col-active {
+      background: #d6f3ff !important;
     }
 
     .card-grid {
@@ -188,29 +236,6 @@
 
   <main>
     <section>
-      <h2>Helpful ways to remember</h2>
-      <p>Math teachers often recommend mixing different senses and patterns. Try these:</p>
-      <ul class="tips">
-        <li>Use <strong>skip-counting songs</strong> (2, 4, 6…) to lock in rhythm.</li>
-        <li>Draw <strong>arrays or equal groups</strong> so the numbers feel concrete.</li>
-        <li>Say a <strong>fact family</strong> aloud (4×3, 3×4, 12÷3, 12÷4) to connect ideas.</li>
-        <li>Spot <strong>patterns on the chart</strong>: every 5 ends with 0 or 5, 9s climb then fall.</li>
-        <li>Break harder facts into <strong>friendly doubles</strong> (8×6 = 8×3 + 8×3).</li>
-        <li>Use quick <strong>flash quizzes</strong> daily; tiny bursts keep memory fresh.</li>
-      </ul>
-    </section>
-
-    <section>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
-        <h2 style="margin:0;">Multiplication Table</h2>
-        <button id="toggleTableBtn" class="secondary">Show the table</button>
-      </div>
-      <div class="table-wrapper" id="tableWrapper">
-        <table id="timesTable"></table>
-      </div>
-    </section>
-
-    <section>
       <h2>Mini math puzzles</h2>
       <div class="card-grid">
         <div class="card" id="flashCard">
@@ -245,23 +270,38 @@
         </div>
       </div>
     </section>
+
+    <section>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <h2 style="margin:0;">Multiplication Table</h2>
+        <button id="toggleTableBtn" class="secondary">Show the table</button>
+      </div>
+      <div class="table-wrapper" id="tableWrapper">
+        <table id="timesTable"></table>
+      </div>
+    </section>
   </main>
 
   <script>
     const tableWrapper = document.getElementById("tableWrapper");
     const toggleTableBtn = document.getElementById("toggleTableBtn");
     const timesTable = document.getElementById("timesTable");
+    const highlightState = { row: null, col: null };
 
     function buildTable() {
+      timesTable.innerHTML = "";
       const size = 12;
       const theadRow = document.createElement("tr");
       const corner = document.createElement("th");
       corner.textContent = "×";
+      corner.classList.add("corner-cell");
       theadRow.appendChild(corner);
 
       for (let i = 1; i <= size; i++) {
         const th = document.createElement("th");
         th.textContent = i;
+        th.dataset.col = i;
+        th.classList.add("col-header");
         theadRow.appendChild(th);
       }
       timesTable.appendChild(theadRow);
@@ -270,15 +310,69 @@
         const tr = document.createElement("tr");
         const rowHeader = document.createElement("th");
         rowHeader.textContent = row;
+        rowHeader.dataset.row = row;
+        rowHeader.classList.add("row-header");
         tr.appendChild(rowHeader);
 
         for (let col = 1; col <= size; col++) {
           const td = document.createElement("td");
           td.textContent = row * col;
+          td.dataset.row = row;
+          td.dataset.col = col;
+          td.classList.add("table-cell");
           tr.appendChild(td);
         }
         timesTable.appendChild(tr);
       }
+    }
+
+    function applyHighlightState() {
+      timesTable.querySelectorAll('[data-row]').forEach((cell) => {
+        const rowVal = Number(cell.dataset.row);
+        cell.classList.toggle("row-active", highlightState.row === rowVal);
+      });
+      timesTable.querySelectorAll('[data-col]').forEach((cell) => {
+        const colVal = Number(cell.dataset.col);
+        cell.classList.toggle("col-active", highlightState.col === colVal);
+      });
+      timesTable.querySelectorAll("td.table-cell").forEach((cell) => {
+        const rowVal = Number(cell.dataset.row);
+        const colVal = Number(cell.dataset.col);
+        const focused = highlightState.row === rowVal && highlightState.col === colVal;
+        cell.classList.toggle("cell-focus", focused);
+      });
+    }
+
+    function handleTableTap(evt) {
+      const cell = evt.target.closest("th, td");
+      if (!cell || !timesTable.contains(cell)) return;
+
+      if (cell.classList.contains("row-header")) {
+        const rowVal = Number(cell.dataset.row);
+        highlightState.row = highlightState.row === rowVal ? null : rowVal;
+      } else if (cell.classList.contains("col-header")) {
+        const colVal = Number(cell.dataset.col);
+        highlightState.col = highlightState.col === colVal ? null : colVal;
+      } else if (cell.dataset.row && cell.dataset.col) {
+        const rowVal = Number(cell.dataset.row);
+        const colVal = Number(cell.dataset.col);
+        const hasRow = highlightState.row !== null;
+        const hasCol = highlightState.col !== null;
+
+        if (hasRow && !hasCol) {
+          highlightState.col = colVal;
+        } else if (!hasRow && hasCol) {
+          highlightState.row = rowVal;
+        } else {
+          const sameCell = highlightState.row === rowVal && highlightState.col === colVal;
+          highlightState.row = sameCell ? null : rowVal;
+          highlightState.col = sameCell ? null : colVal;
+        }
+      } else {
+        highlightState.row = null;
+        highlightState.col = null;
+      }
+      applyHighlightState();
     }
 
     toggleTableBtn.addEventListener("click", () => {
@@ -288,6 +382,8 @@
     });
 
     buildTable();
+    applyHighlightState();
+    timesTable.addEventListener("click", handleTableTap);
 
     // Flash quiz logic
     const flashQuestionEl = document.getElementById("flashQuestion");
@@ -378,6 +474,16 @@
     toggleTableBtn.click();
     newFlashQuestion();
     newMissingPuzzle();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch((err) => {
+          console.error('Service worker registration failed:', err);
+        });
+      });
+    }
   </script>
 </body>
 </html>

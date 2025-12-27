@@ -1,0 +1,21 @@
+{
+  "name": "Nily Playhouse",
+  "short_name": "Nily",
+  "description": "Colorful learning adventures for Nina and Lily, starting with Multiply Magic.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f5fbff",
+  "theme_color": "#ff7edb",
+  "icons": [
+    {
+      "src": "/assets/site/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/site/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
