@@ -188,6 +188,16 @@
       background: #d6f3ff !important;
     }
 
+    td.pattern-highlight {
+      box-shadow: inset 0 0 0 2px rgba(56, 189, 248, 0.7);
+      background: rgba(56, 189, 248, 0.15) !important;
+    }
+
+    .empty-note {
+      color: #94a3b8;
+      font-style: italic;
+    }
+
     .card-grid {
       display: grid;
       gap: 1.5rem;
@@ -210,6 +220,103 @@
       margin-top: 0.75rem;
       font-weight: bold;
       min-height: 1.5rem;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .streak-stats {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(45, 156, 219, 0.1);
+      border-radius: 0.75rem;
+      padding: 0.5rem 0.9rem;
+      font-weight: 600;
+      color: #0b2a4a;
+    }
+
+    .memory-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .memory-card {
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      background: #eff6ff;
+      border: 2px solid transparent;
+      font-weight: 600;
+      min-height: 3rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .memory-card.revealed {
+      background: #fff;
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+    }
+
+    .memory-card.matched {
+      background: #dcfce7;
+      border-color: #06d6a0;
+      color: #064e3b;
+    }
+
+    .power-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.5rem;
+      margin: 0.5rem 0 1rem;
+      align-items: end;
+    }
+
+    .power-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      min-height: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .power-pill {
+      background: #f0f9ff;
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-weight: 600;
+      border: 1px solid rgba(14, 165, 233, 0.4);
+      display: inline-flex;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    .power-pill button {
+      background: transparent;
+      border: none;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: #0f172a;
+    }
+
+    .pattern-controls {
+      margin: 1rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .pattern-controls select {
+      border-radius: 999px;
+      border: 2px solid rgba(45, 156, 219, 0.4);
+      padding: 0.4rem 0.8rem;
+      font: inherit;
+      background: white;
     }
 
     .stats {
@@ -268,6 +375,59 @@
           </div>
           <div class="feedback" id="missingFeedback"></div>
         </div>
+        <div class="card" id="streakCard">
+          <h3>Streak Sprint</h3>
+          <p>Keep answering correctly before the timer drains to build an epic streak.</p>
+          <div class="streak-stats">
+            <span id="streakTimer">—</span>
+            <span id="streakCount">Streak: 0</span>
+          </div>
+          <div class="question" id="streakQuestion"></div>
+          <label>
+            Your answer
+            <input type="number" id="streakAnswer" placeholder="Type it" />
+          </label>
+          <div class="button-row">
+            <button id="streakStart" type="button">Start Sprint</button>
+            <button id="streakSubmit" class="secondary" type="button">Check</button>
+          </div>
+          <div class="feedback" id="streakFeedback"></div>
+        </div>
+        <div class="card" id="memoryCard">
+          <h3>Memory Match</h3>
+          <p>Flip two cards with the same product to collect a match.</p>
+          <div class="memory-board" id="memoryBoard"></div>
+          <div class="button-row">
+            <button id="memoryReset" type="button">Shuffle Cards</button>
+          </div>
+          <div class="feedback" id="memoryFeedback"></div>
+        </div>
+        <div class="card" id="powerCard">
+          <h3>Your Power List</h3>
+          <p>Save tricky facts and practice only those combos.</p>
+          <div class="power-form">
+            <label>
+              Number 1
+              <input type="number" min="1" max="12" id="powerRow" value="7" />
+            </label>
+            <label>
+              Number 2
+              <input type="number" min="1" max="12" id="powerCol" value="8" />
+            </label>
+            <button id="powerAdd" class="secondary" type="button">Add to list</button>
+          </div>
+          <div class="power-list" id="powerList"></div>
+          <div class="question" id="powerQuestion"></div>
+          <label>
+            Answer
+            <input type="number" id="powerAnswer" placeholder="?" />
+          </label>
+          <div class="button-row">
+            <button id="powerNew" class="secondary" type="button">New Fact</button>
+            <button id="powerCheck" type="button">Check</button>
+          </div>
+          <div class="feedback" id="powerFeedback"></div>
+        </div>
       </div>
     </section>
 
@@ -275,6 +435,19 @@
       <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
         <h2 style="margin:0;">Multiplication Table</h2>
         <button id="toggleTableBtn" class="secondary">Show the table</button>
+      </div>
+      <div class="pattern-controls">
+        <label>
+          Pattern explorer
+          <select id="patternSelect">
+            <option value="">Choose a pattern</option>
+            <option value="even">All even products</option>
+            <option value="five">Multiples of 5</option>
+            <option value="square">Perfect squares</option>
+            <option value="diag">Diagonal (same factors)</option>
+          </select>
+        </label>
+        <button id="clearPattern" class="secondary" type="button">Clear pattern</button>
       </div>
       <div class="table-wrapper" id="tableWrapper">
         <table id="timesTable"></table>
@@ -375,6 +548,39 @@
       applyHighlightState();
     }
 
+    const patternSelect = document.getElementById("patternSelect");
+    const clearPatternBtn = document.getElementById("clearPattern");
+
+    function applyPatternHighlight(type) {
+      timesTable.querySelectorAll("td.table-cell").forEach((cell) => {
+        const rowVal = Number(cell.dataset.row);
+        const colVal = Number(cell.dataset.col);
+        const product = rowVal * colVal;
+        let matches = false;
+
+        if (type === "even") {
+          matches = product % 2 === 0;
+        } else if (type === "five") {
+          matches = product % 5 === 0;
+        } else if (type === "square") {
+          matches = Number.isInteger(Math.sqrt(product));
+        } else if (type === "diag") {
+          matches = rowVal === colVal;
+        }
+
+        cell.classList.toggle("pattern-highlight", matches && type !== "");
+      });
+    }
+
+    patternSelect.addEventListener("change", (event) => {
+      applyPatternHighlight(event.target.value);
+    });
+
+    clearPatternBtn.addEventListener("click", () => {
+      patternSelect.value = "";
+      applyPatternHighlight("");
+    });
+
     toggleTableBtn.addEventListener("click", () => {
       const visible = tableWrapper.style.display === "block";
       tableWrapper.style.display = visible ? "none" : "block";
@@ -469,6 +675,293 @@
     });
 
     document.getElementById("missingNew").addEventListener("click", newMissingPuzzle);
+
+    // Streak sprint logic
+    const streakTimerEl = document.getElementById("streakTimer");
+    const streakCountEl = document.getElementById("streakCount");
+    const streakQuestionEl = document.getElementById("streakQuestion");
+    const streakAnswerEl = document.getElementById("streakAnswer");
+    const streakFeedbackEl = document.getElementById("streakFeedback");
+    const streakState = { timer: 0, timerId: null, streak: 0, a: 0, b: 0, running: false };
+    const STREAK_TIME = 20;
+
+    function updateStreakStats() {
+      streakTimerEl.textContent = streakState.running ? `${streakState.timer}s left` : "Tap Start";
+      streakCountEl.textContent = `Streak: ${streakState.streak}`;
+    }
+
+    function newStreakQuestion() {
+      streakState.a = Math.ceil(Math.random() * 12);
+      streakState.b = Math.ceil(Math.random() * 12);
+      streakQuestionEl.textContent = `${streakState.a} × ${streakState.b} = ?`;
+      streakAnswerEl.value = "";
+      streakFeedbackEl.textContent = "";
+    }
+
+    function endStreak(message) {
+      clearInterval(streakState.timerId);
+      streakState.timerId = null;
+      streakState.running = false;
+      streakFeedbackEl.textContent = message;
+      updateStreakStats();
+    }
+
+    function tickStreak() {
+      streakState.timer -= 1;
+      if (streakState.timer <= 0) {
+        streakState.timer = 0;
+        updateStreakStats();
+        endStreak(`Time up! Final streak: ${streakState.streak}`);
+        return;
+      }
+      updateStreakStats();
+    }
+
+    document.getElementById("streakStart").addEventListener("click", () => {
+      clearInterval(streakState.timerId);
+      streakState.timer = STREAK_TIME;
+      streakState.streak = 0;
+      streakState.running = true;
+      streakFeedbackEl.textContent = "Go for a new high score!";
+      newStreakQuestion();
+      updateStreakStats();
+      streakAnswerEl.focus();
+      streakState.timerId = setInterval(tickStreak, 1000);
+    });
+
+    document.getElementById("streakSubmit").addEventListener("click", () => {
+      if (!streakState.running) {
+        streakFeedbackEl.textContent = "Tap Start Sprint first!";
+        return;
+      }
+      const guess = Number(streakAnswerEl.value);
+      if (!Number.isFinite(guess)) {
+        streakFeedbackEl.textContent = "Type a number to answer.";
+        return;
+      }
+      if (guess === streakState.a * streakState.b) {
+        streakState.streak += 1;
+        streakState.timer = Math.min(STREAK_TIME, streakState.timer + 3);
+        streakFeedbackEl.textContent = "Nice! Streak climbs higher.";
+        newStreakQuestion();
+      } else {
+        streakState.streak = 0;
+        streakFeedbackEl.textContent = "Oops! Streak reset—keep going.";
+        newStreakQuestion();
+      }
+      updateStreakStats();
+    });
+
+    // Memory match logic
+    const memoryBoard = document.getElementById("memoryBoard");
+    const memoryFeedback = document.getElementById("memoryFeedback");
+    const memoryState = { cards: [], revealed: [], lock: false, matches: 0 };
+    const MEMORY_SETS = [
+      { product: 12, combos: ["3 × 4", "2 × 6"] },
+      { product: 18, combos: ["3 × 6", "9 × 2"] },
+      { product: 20, combos: ["4 × 5", "2 × 10"] },
+      { product: 24, combos: ["3 × 8", "6 × 4"] },
+      { product: 27, combos: ["3 × 9", "9 × 3"] },
+      { product: 36, combos: ["6 × 6", "4 × 9"] }
+    ];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function buildMemoryMatch() {
+      memoryState.cards = [];
+      MEMORY_SETS.forEach((set) => {
+        set.combos.forEach((expr) => {
+          memoryState.cards.push({ expression: expr, product: set.product, revealed: false, matched: false });
+        });
+      });
+      shuffle(memoryState.cards);
+      memoryBoard.innerHTML = "";
+      memoryState.cards.forEach((card, index) => {
+        const button = document.createElement("button");
+        button.className = "memory-card";
+        button.dataset.index = index;
+        button.textContent = "?";
+        button.addEventListener("click", handleMemoryFlip);
+        memoryBoard.appendChild(button);
+      });
+      memoryState.revealed = [];
+      memoryState.lock = false;
+      memoryState.matches = 0;
+      memoryFeedback.textContent = "Tap two cards to see if they match.";
+    }
+
+    function revealCard(index) {
+      const card = memoryState.cards[index];
+      const button = memoryBoard.querySelector(`[data-index="${index}"]`);
+      card.revealed = true;
+      button.textContent = card.expression;
+      button.classList.add("revealed");
+    }
+
+    function hideCard(index) {
+      const card = memoryState.cards[index];
+      const button = memoryBoard.querySelector(`[data-index="${index}"]`);
+      card.revealed = false;
+      button.textContent = "?";
+      button.classList.remove("revealed");
+    }
+
+    function markMatch(indexes) {
+      indexes.forEach((idx) => {
+        memoryState.cards[idx].matched = true;
+        const button = memoryBoard.querySelector(`[data-index="${idx}"]`);
+        button.classList.add("matched");
+      });
+    }
+
+    function handleMemoryFlip(event) {
+      if (memoryState.lock) return;
+      const button = event.currentTarget;
+      const index = Number(button.dataset.index);
+      const card = memoryState.cards[index];
+      if (card.matched || card.revealed) return;
+
+      revealCard(index);
+      memoryState.revealed.push(index);
+
+      if (memoryState.revealed.length === 2) {
+        memoryState.lock = true;
+        const [firstIdx, secondIdx] = memoryState.revealed;
+        const first = memoryState.cards[firstIdx];
+        const second = memoryState.cards[secondIdx];
+        if (first.product === second.product) {
+          markMatch([firstIdx, secondIdx]);
+          memoryState.matches += 1;
+          memoryFeedback.textContent = `Nice! ${first.product} found.`;
+          memoryState.revealed = [];
+          memoryState.lock = false;
+          if (memoryState.matches === MEMORY_SETS.length) {
+            memoryFeedback.textContent = "All matches found! Shuffle for a new round.";
+          }
+        } else {
+          memoryFeedback.textContent = "Not a match… try to remember!";
+          setTimeout(() => {
+            hideCard(firstIdx);
+            hideCard(secondIdx);
+            memoryState.revealed = [];
+            memoryState.lock = false;
+          }, 800);
+        }
+      }
+    }
+
+    document.getElementById("memoryReset").addEventListener("click", buildMemoryMatch);
+
+    // Power list logic
+    const powerRowInput = document.getElementById("powerRow");
+    const powerColInput = document.getElementById("powerCol");
+    const powerListEl = document.getElementById("powerList");
+    const powerQuestionEl = document.getElementById("powerQuestion");
+    const powerAnswerEl = document.getElementById("powerAnswer");
+    const powerFeedbackEl = document.getElementById("powerFeedback");
+    const powerState = { facts: [], current: null };
+
+    function normalizePair(a, b) {
+      const nums = [a, b].sort((x, y) => x - y);
+      return `${nums[0]}-${nums[1]}`;
+    }
+
+    function renderPowerList() {
+      powerListEl.innerHTML = "";
+      if (!powerState.facts.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-note";
+        empty.textContent = "No favorites yet. Add a fact!";
+        powerListEl.appendChild(empty);
+        return;
+      }
+      powerState.facts.forEach((fact, index) => {
+        const pill = document.createElement("div");
+        pill.className = "power-pill";
+        pill.innerHTML = `${fact.a} × ${fact.b} <button type="button" data-index="${index}" aria-label="Remove fact">×</button>`;
+        powerListEl.appendChild(pill);
+      });
+    }
+
+    powerListEl.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-index]");
+      if (!button) return;
+      const idx = Number(button.dataset.index);
+      powerState.facts.splice(idx, 1);
+      powerFeedbackEl.textContent = "Fact removed.";
+      powerState.current = null;
+      renderPowerList();
+      newPowerQuestion();
+    });
+
+    document.getElementById("powerAdd").addEventListener("click", () => {
+      const a = Number(powerRowInput.value);
+      const b = Number(powerColInput.value);
+      if (![a, b].every((n) => Number.isInteger(n) && n >= 1 && n <= 12)) {
+        powerFeedbackEl.textContent = "Pick numbers from 1-12.";
+        return;
+      }
+      const key = normalizePair(a, b);
+      if (powerState.facts.some((fact) => normalizePair(fact.a, fact.b) === key)) {
+        powerFeedbackEl.textContent = "Already on your list!";
+        return;
+      }
+      powerState.facts.push({ a, b });
+      powerFeedbackEl.textContent = `Added ${a} × ${b} to your power list.`;
+      renderPowerList();
+      if (!powerState.current) {
+        newPowerQuestion();
+      }
+    });
+
+    function newPowerQuestion() {
+      if (!powerState.facts.length) {
+        powerQuestionEl.textContent = "Add a fact, then tap New Fact.";
+        return;
+      }
+      powerState.current = powerState.facts[Math.floor(Math.random() * powerState.facts.length)];
+      powerQuestionEl.textContent = `${powerState.current.a} × ${powerState.current.b} = ?`;
+      powerAnswerEl.value = "";
+      powerFeedbackEl.textContent = "";
+      powerAnswerEl.focus();
+    }
+
+    document.getElementById("powerNew").addEventListener("click", () => {
+      newPowerQuestion();
+    });
+
+    document.getElementById("powerCheck").addEventListener("click", () => {
+      if (!powerState.current) {
+        powerFeedbackEl.textContent = "Add a fact first.";
+        return;
+      }
+      const guess = Number(powerAnswerEl.value);
+      if (!Number.isFinite(guess)) {
+        powerFeedbackEl.textContent = "Type an answer first.";
+        return;
+      }
+      const answer = powerState.current.a * powerState.current.b;
+      if (guess === answer) {
+        powerFeedbackEl.textContent = "Yes! You're owning this fact.";
+        newPowerQuestion();
+      } else {
+        powerFeedbackEl.textContent = "Not yet—try again and peek at the chart!";
+        powerAnswerEl.select();
+      }
+    });
+
+    // Kick off the new helpers
+    updateStreakStats();
+    buildMemoryMatch();
+    renderPowerList();
+    newPowerQuestion();
+    applyPatternHighlight(patternSelect.value);
 
     // Start with table hidden for peek-a-boo effect and load puzzles
     toggleTableBtn.click();
