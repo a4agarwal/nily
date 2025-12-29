@@ -1,6 +1,6 @@
 {
-  "name": "Nily Playhouse",
-  "short_name": "Nily",
+  "name": "NiLy Playhouse",
+  "short_name": "NiLy",
   "description": "Colorful learning adventures for Nina and Lily, starting with Multiply Magic.",
   "start_url": "/index.html",
   "display": "standalone",

@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nily Playhouse</title>
+  <title>NiLy Playhouse</title>
   <meta name="theme-color" content="#ff7edb" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Nily Playhouse" />
+  <meta name="apple-mobile-web-app-title" content="NiLy Playhouse" />
   <link rel="icon" type="image/png" href="assets/site/favicon.png" />
   <link rel="apple-touch-icon" href="assets/site/icons/apple-touch-icon.png" />
   <link rel="manifest" href="manifest.webmanifest" />
@@ -141,13 +141,20 @@
       border-radius: 1.5rem;
       padding: 1.5rem;
       border: 2px solid transparent;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       min-height: 12rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
     }
 
-    .activity-card:hover {
+    .activity-card:hover,
+    .activity-card:focus-visible {
       transform: translateY(-4px);
       border-color: rgba(56, 189, 248, 0.7);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.15);
+      outline: none;
     }
 
     .activity-card h3 {
@@ -157,12 +164,12 @@
     .activity-card p {
       margin: 0 0 1.5rem;
       color: #475569;
+      flex: 1;
     }
 
-    .activity-card a {
-      text-decoration: none;
-      color: inherit;
-      font-weight: 600;
+    .card-link {
+      font-weight: 700;
+      color: var(--teal);
     }
 
     .badge {
@@ -214,11 +221,12 @@
     <div class="glow pink"></div>
     <div class="glow blue"></div>
     <div class="tagline">✨ Nina & Lily's Playhouse</div>
-    <h1>Welcome to the Nily Adventure Hub!</h1>
+    <h1>Welcome to the NiLy Adventure Hub!</h1>
     <p>Every visit unlocks a brand-new quest built just for Nina and Lily. Dive into math missions, creative labs, and curious challenges that make learning feel like playtime.</p>
     <div class="cta-row">
       <a class="cta-primary" href="#activities">Start Exploring</a>
       <a class="cta-secondary" href="activities/multiply-magic/index.html">Jump to Multiply Magic</a>
+      <a class="cta-secondary" href="activities/alphabet-play/index.html">Meet the Alphabet Buddies</a>
     </div>
   </header>
 
@@ -227,33 +235,18 @@
       <h2>Pick an activity</h2>
       <p>Choose a card to start an adventure. We keep adding new games so pop back anytime!</p>
       <div class="card-grid">
-        <article class="activity-card">
+        <a class="activity-card" href="activities/alphabet-play/index.html">
           <div class="badge">🌟 Featured</div>
+          <h3>Alphabet Adventure</h3>
+          <p>Tap glowing letters, drag silly objects into the letter shape, and trace sparkly paths. Perfect for little explorers.</p>
+          <span class="card-link">Play Alphabet Adventure →</span>
+        </a>
+        <a class="activity-card" href="activities/multiply-magic/index.html">
+          <div class="badge">✴️ Popular</div>
           <h3>Multiply Magic</h3>
           <p>Race through flash cards, times tables, and mystery number puzzles to level up multiplication powers.</p>
-          <a href="activities/multiply-magic/index.html">Play Multiply Magic →</a>
-        </article>
-        <article class="activity-card">
-          <div class="badge coming-soon">🚧 Coming soon</div>
-          <h3>Shape Shifters</h3>
-          <p>Build wild creatures by mixing shapes, colors, and symmetry rules. Art + geometry!</p>
-        </article>
-        <article class="activity-card">
-          <div class="badge coming-soon">🚧 Coming soon</div>
-          <h3>Word Wonder Lab</h3>
-          <p>Spin secret word wheels, craft silly stories, and discover new vocabulary potions.</p>
-        </article>
-      </div>
-
-      <div class="highlight">
-        <div>
-          <h3>Made with extra sparkle</h3>
-          <p>We mix imagination, bright colors, and gentle challenges so both Nina and Lily can play together, helping each other along the way.</p>
-        </div>
-        <div>
-          <h3>Track your wins</h3>
-          <p>Each app celebrates streaks, milestones, and clever thinking, keeping the fun going and the confidence growing.</p>
-        </div>
+          <span class="card-link">Play Multiply Magic →</span>
+        </a>
       </div>
     </section>
   </main>

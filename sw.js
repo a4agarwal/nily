@@ -8,7 +8,9 @@ const ASSETS = [
   '/assets/site/icons/icon-512.png',
   '/assets/site/icons/apple-touch-icon.png',
   '/activities/multiply-magic/index.html',
-  '/activities/multiply-magic/favicon.png'
+  '/activities/multiply-magic/favicon.png',
+  '/activities/alphabet-play/index.html',
+  '/activities/alphabet-play/favicon.png'
 ];
 
 self.addEventListener('install', (event) => {
